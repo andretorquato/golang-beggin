@@ -17,8 +17,18 @@ func Title(urls ...string) <-chan string {
 				fmt.Println(err)
 				return
 			}
-			html, _ := ioutil.ReadAll(resp.Body)
-			title, _ := regexp.Compile("<title>(.*?)<\\/title>")
+			html, htmlErr := ioutil.ReadAll(resp.Body)
+
+			if htmlErr != nil {
+				channel <- "Error reading HTML"
+			}
+
+			title, titleErr := regexp.Compile("<title>(.*?)<\\/title>")
+
+			if titleErr != nil {
+				channel <- "Error parsing HTML"
+			}
+
 			channel <- title.FindStringSubmatch(string(html))[1]
 		}(url)
 	}
