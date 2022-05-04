@@ -1,4 +1,4 @@
-module generator-teste
+module golang-beggin
 
 go 1.17
 
