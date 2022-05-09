@@ -8,6 +8,7 @@ import (
 var errorMessage = "%s expected to be %d, but got %d"
 
 func TestIndexStrings(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input         string
 		value         string
@@ -15,7 +16,7 @@ func TestIndexStrings(t *testing.T) {
 	}{
 		{"Hello World", "World", 6},
 		{"Own", "Li", -1},
-		{"Ruffy", "Ruffy", 1},
+		{"Ruffy", "Ruffy", 0},
 	}
 
 	for _, test := range tests {
