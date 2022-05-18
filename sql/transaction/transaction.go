@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -14,5 +15,17 @@ func main() {
 
 	defer db.Close()
 
-	db.Begin()
+	tx, _ := db.Begin()
+	stmt, _ := tx.Prepare("INSERT INTO users(id, name) VALUES(?, ?)")
+
+	stmt.Exec(1, "John")
+	stmt.Exec(2, "Jane")
+	_, err = stmt.Exec(1, "Joãoe")
+
+	if err != nil {
+		tx.Rollback()
+		log.Fatal(err)
+	}
+
+	tx.Commit()
 }
