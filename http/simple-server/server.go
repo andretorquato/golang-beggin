@@ -15,7 +15,19 @@ type user struct {
 func userHandler(w http.ResponseWriter, r *http.Request) {
 	sid := strings.TrimPrefix(r.URL.Path, "/user/")
 	id, _ := strconv.Atoi(sid)
-	fmt.Println(id)
+	switch {
+	case r.Method == "GET" && id > 0:
+		getUser(w, r, id)
+	case r.Method == "GET":
+		getUsers(w, r)
+	default:
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Println("not found")
+	}
 }
+
+func getUser(w http.ResponseWriter, r *http.Request, id int) {}
+
+func getUsers(w http.ResponseWriter, r *http.Request) {}
 
 func main() {}
