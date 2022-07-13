@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"command-line/app"
+	"log"
+	"os"
+)
 
 func main() {
-	fmt.Print("Hello, world.\n")
+	app := app.Generate()
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal(err)
+	}
 }
