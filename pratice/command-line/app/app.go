@@ -26,6 +26,17 @@ func Generate() *cli.App {
 			},
 			Action: getIps,
 		},
+		{
+			Name:  "servers",
+			Usage: "Get the server list from a url",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "host",
+					Value: "google.com.br",
+				},
+			},
+			Action: getServers,
+		},
 	}
 	return app
 }
@@ -40,5 +51,17 @@ func getIps(c *cli.Context) error {
 		fmt.Println(ip)
 	}
 
+	return nil
+}
+
+func getServers(c *cli.Context) error {
+	host := c.String("host")
+	servers, err := net.LookupNS(host)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, server := range servers {
+		fmt.Println(server.Host)
+	}
 	return nil
 }
