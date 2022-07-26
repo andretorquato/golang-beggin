@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"api/src/database"
 	"api/src/models"
+	"api/src/repositories"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -18,6 +20,15 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	if erro = json.Unmarshal(bodyRequest, &user); erro != nil {
 		log.Fatal(erro)
 	}
+
+	db, erro := database.Connect()
+	if erro != nil {
+		log.Fatal(erro)
+	}
+
+	repository := repositories.NewUsersRepository(db)
+	repository.Create(user)
+
 }
 
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
