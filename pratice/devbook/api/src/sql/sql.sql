@@ -1,4 +1,4 @@
-CREATE IF NOT EXISTS devbook;
+CREATE DATABASE IF NOT EXISTS devbook;
 
 USE devbook;
 
@@ -10,6 +10,6 @@ CREATE TABLE users (
 	nickname varchar(50) not null,
 	email varchar(50) not null,
 	password varchar(50) not null,
-	created_at timestamp default current_timestamp(),
+	created_at timestamp default current_timestamp()
 ) ENGINE=INNODB;
 
