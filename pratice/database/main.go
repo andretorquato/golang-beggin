@@ -1,33 +1,17 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
+	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
 )
 
 func main() {
-	stringConnection := "root:password@/devbook?charset=utf8&parseTime=True&loc=Local"
-	db, err := sql.Open("mysql", stringConnection)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
+	router := mux.NewRouter()
 
-	if err = db.Ping(); err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("Connected to MySQL")
-
-	// select all
-	rows, err := db.Query("SELECT * FROM users")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	fmt.Printf("%+v\n", rows)
+	fmt.Println("Starting server...")
+	log.Fatal(http.ListenAndServe(":5000", router))
 }
