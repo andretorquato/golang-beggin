@@ -29,10 +29,10 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	repository := repositories.NewUsersRepository(db)
 	userID, erro := repository.Create(user)
-	fmt.Println(erro)
 	if erro != nil {
 		log.Fatal(erro)
 	}
+	fmt.Println(user)
 	w.Write([]byte(fmt.Sprintf("Id added %d", userID)))
 }
 
