@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database-pratice/src/server"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 
 func main() {
 	router := mux.NewRouter()
+	router.HandleFunc("/users", server.CreateUser).Methods(http.MethodPost)
 
 	fmt.Println("Starting server...")
 	log.Fatal(http.ListenAndServe(":5000", router))
