@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type user struct {
@@ -93,5 +96,43 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+}
 
+func GetUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	ID, erro := strconv.Atoi(params["id"])
+	if erro != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	db, erro := database.Connect()
+	if erro != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	row, erro := db.Query("SELECT * FROM users WHERE id = ?", ID)
+	if erro != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer row.Close()
+
+	var user user
+	for row.Next() {
+		erro = row.Scan(&user.ID, &user.Name, &user.Nickname, &user.Email, &user.Password, &user.CreatedAt)
+		if erro != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	}
+
+	w.WriteHeader(http.StatusOK)
+	if erro := json.NewEncoder(w).Encode(user); erro != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
