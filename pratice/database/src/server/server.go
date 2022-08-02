@@ -59,3 +59,39 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte(fmt.Sprintf("{\"id\": %d}", insertedID)))
 }
+
+func GetUsers(w http.ResponseWriter, r *http.Request) {
+	db, erro := database.Connect()
+	if erro != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	rows, erro := db.Query("SELECT * FROM users")
+	if erro != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var users []user
+
+	for rows.Next() {
+		var user user
+		erro = rows.Scan(&user.ID, &user.Name, &user.Nickname, &user.Email, &user.Password, &user.CreatedAt)
+		if erro != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		users = append(users, user)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	if erro := json.NewEncoder(w).Encode(users); erro != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+}

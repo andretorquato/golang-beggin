@@ -13,6 +13,7 @@ import (
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/users", server.CreateUser).Methods(http.MethodPost)
+	router.HandleFunc("/users", server.GetUsers).Methods(http.MethodGet)
 
 	fmt.Println("Starting server...")
 	log.Fatal(http.ListenAndServe(":5000", router))
