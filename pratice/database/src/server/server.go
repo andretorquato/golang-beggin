@@ -136,3 +136,49 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	ID, erro := strconv.Atoi(params["id"])
+	if erro != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	bodyRequest, erro := ioutil.ReadAll(r.Body)
+	if erro != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var user user
+
+	if erro = json.Unmarshal(bodyRequest, &user); erro != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	db, erro := database.Connect()
+	if erro != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	statement, erro := db.Prepare("UPDATE users SET username = ?, nickname = ?, email = ?, password = ? WHERE id = ?")
+	if erro != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer statement.Close()
+
+	_, erro = statement.Exec(user.Name, user.Nickname, user.Email, user.Password, ID)
+	if erro != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("{\"message\": \"User updated\"}"))
+}
