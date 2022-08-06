@@ -182,3 +182,36 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("{\"message\": \"User updated\"}"))
 }
+
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	ID, erro := strconv.ParseInt(params["id"], 10, 32)
+	if erro != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	db, erro := database.Connect()
+	if erro != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	statement, erro := db.Prepare("DELETE FROM users WHERE id = ?")
+	if erro != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer statement.Close()
+
+	_, erro = statement.Exec(ID)
+	if erro != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("{\"message\": \"User deleted\"}"))
+}
