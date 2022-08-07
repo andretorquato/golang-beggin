@@ -32,7 +32,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	if erro != nil {
 		log.Fatal(erro)
 	}
-	fmt.Println(user)
+
 	w.Write([]byte(fmt.Sprintf("Id added %d", userID)))
 }
 
