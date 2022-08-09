@@ -29,6 +29,11 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if erro = user.Prepare(); erro != nil {
+		response.Error(w, http.StatusUnprocessableEntity, erro)
+		return
+	}
+
 	repository := repositories.NewUsersRepository(db)
 	user.ID, erro = repository.Create(user)
 	if erro != nil {
