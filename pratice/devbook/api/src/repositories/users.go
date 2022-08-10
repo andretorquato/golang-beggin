@@ -60,3 +60,18 @@ func (repo Users) Search(query string) ([]models.User, error) {
 	}
 	return users, nil
 }
+
+func (repo Users) FindByID(id uint64) (models.User, error) {
+	statement, erro := repo.db.Prepare("SELECT id, name, nick, email, created_at FROM users WHERE id = ?")
+	if erro != nil {
+		return models.User{}, erro
+	}
+	defer statement.Close()
+	row := statement.QueryRow(id)
+	var user models.User
+	erro = row.Scan(&user.ID, &user.Name, &user.Nick, &user.Email, &user.CreatedAt)
+	if erro != nil {
+		return models.User{}, erro
+	}
+	return user, nil
+}
