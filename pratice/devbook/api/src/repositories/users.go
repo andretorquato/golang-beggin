@@ -88,3 +88,17 @@ func (repo Users) Update(user models.User, id uint64) error {
 	}
 	return nil
 }
+
+func (repo Users) Delete(id uint64) error {
+	statement, erro := repo.db.Prepare("DELETE FROM users WHERE id = ?")
+	if erro != nil {
+		return erro
+	}
+	defer statement.Close()
+
+	if _, erro := statement.Exec(id); erro != nil {
+		return erro
+	}
+
+	return nil
+}
