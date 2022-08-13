@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"api/src/authentication"
 	"api/src/database"
 	"api/src/models"
 	"api/src/repositories"
@@ -43,9 +44,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	token, _ := authentication.GenerateToken(userDB.ID)
+
 	response.JSON(w, http.StatusOK, struct {
 		Message string `json:"message"`
+		Token   string `json:"token"`
 	}{
 		Message: "Login successful",
+		Token:   token,
 	})
 }
