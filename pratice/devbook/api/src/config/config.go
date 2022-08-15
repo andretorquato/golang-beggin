@@ -13,6 +13,8 @@ var (
 	URLConnectDB = ""
 
 	Port = 0
+
+	SecretKey []byte
 )
 
 func Load() {
@@ -28,4 +30,6 @@ func Load() {
 	}
 
 	URLConnectDB = fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=True&loc=Local", os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
+
+	SecretKey = []byte(os.Getenv("SECRET_KEY"))
 }
