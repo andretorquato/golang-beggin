@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"api/src/authentication"
 	"api/src/database"
 	"api/src/models"
 	"api/src/repositories"
 	"api/src/response"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -100,6 +102,18 @@ func UpdateUserData(w http.ResponseWriter, r *http.Request) {
 		response.Error(w, http.StatusBadRequest, erro)
 		return
 	}
+
+	userIDIntoToken, erro := authentication.GetUserID(r)
+	if erro != nil {
+		response.Error(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	if userID != userIDIntoToken {
+		response.Error(w, http.StatusForbidden, errors.New("unauthorized, you can only update your own data"))
+		return
+	}
+
 	var user models.User
 	bodyRequest, erro := ioutil.ReadAll(r.Body)
 	if erro != nil {
