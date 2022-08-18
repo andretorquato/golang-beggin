@@ -78,6 +78,17 @@ func GetAnUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	userIDIntoToken, erro := authentication.GetUserID(r)
+	if erro != nil {
+		response.Error(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	if userID != userIDIntoToken {
+		response.Error(w, http.StatusForbidden, errors.New("unauthorized, you can only get your own data"))
+		return
+	}
+
 	db, erro := database.Connect()
 	if erro != nil {
 		response.Error(w, http.StatusInternalServerError, erro)
@@ -151,6 +162,17 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	userID, erro := strconv.ParseUint(parameters["id"], 10, 64)
 	if erro != nil {
 		response.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	userIDIntoToken, erro := authentication.GetUserID(r)
+	if erro != nil {
+		response.Error(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	if userID != userIDIntoToken {
+		response.Error(w, http.StatusForbidden, errors.New("unauthorized, you can only delete your own data"))
 		return
 	}
 
