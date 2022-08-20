@@ -42,4 +42,10 @@ var userRoutes = []Route{
 		Handler:  controllers.FollowUser,
 		NeedAuth: true,
 	},
+	{
+		URI:      "/users/{id}/unfollow",
+		Method:   http.MethodDelete,
+		Handler:  controllers.UnFollowUser,
+		NeedAuth: true,
+	},
 }
