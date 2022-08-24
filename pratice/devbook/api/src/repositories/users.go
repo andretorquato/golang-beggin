@@ -145,7 +145,10 @@ func (repo Users) UnFollow(userID, unFollowerID uint64) error {
 }
 
 func (repo Users) GetFollowers(userID uint64) ([]models.User, error) {
-	rows, erro := repo.db.Query("SELECT u.id. u.name, u.nick, u.email, u.created_at FROM users u INNER JOIN followers f ON u.id = f.follower_id WHERE f.user_id = ?", userID)
+	rows, erro := repo.db.Query(`
+	SELECT u.id, u.name, u.nick, u.email, u.created_at 
+	FROM users u INNER JOIN followers f ON u.id = f.follower_id WHERE f.user_id = ?`,
+		userID)
 	if erro != nil {
 		return nil, erro
 	}
@@ -159,5 +162,27 @@ func (repo Users) GetFollowers(userID uint64) ([]models.User, error) {
 		}
 		users = append(users, user)
 	}
+	return users, nil
+}
+
+func (repo Users) GetFollowing(userID uint64) ([]models.User, error) {
+	rows, erro := repo.db.Query(`
+	SELECT u.id, u.name, u.nick, u.email, u.created_at
+	FROM users u INNER JOIN followers f ON u.id = f.user_id WHERE f.follower_id = ?
+	`, userID)
+	if erro != nil {
+		return nil, erro
+	}
+	defer rows.Close()
+	var users []models.User
+	for rows.Next() {
+		var user models.User
+		erro := rows.Scan(&user.ID, &user.Name, &user.Nick, &user.Email, &user.CreatedAt)
+		if erro != nil {
+			return nil, erro
+		}
+		users = append(users, user)
+	}
+
 	return users, nil
 }
