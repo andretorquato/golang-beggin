@@ -186,3 +186,32 @@ func (repo Users) GetFollowing(userID uint64) ([]models.User, error) {
 
 	return users, nil
 }
+
+func (repo Users) UserSavedPassword(userID uint64) (string, error) {
+	rows, erro := repo.db.Query("SELECT password FROM users WHERE id = ?", userID)
+	if erro != nil {
+		return "", erro
+	}
+	defer rows.Close()
+	var user models.User
+
+	if rows.Next() {
+		if erro = rows.Scan(&user.Password); erro != nil {
+			return "", nil
+		}
+	}
+	return user.Password, nil
+}
+
+func (repo Users) UpdatePassword(userID uint64, password string) error {
+	statement, erro := repo.db.Prepare("UPDATE users SET password = ? WHERE id = ?")
+	if erro != nil {
+		return erro
+	}
+	defer statement.Close()
+	_, erro = statement.Exec(password, userID)
+	if erro != nil {
+		return erro
+	}
+	return nil
+}

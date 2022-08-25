@@ -6,6 +6,7 @@ import (
 	"api/src/models"
 	"api/src/repositories"
 	"api/src/response"
+	"api/src/security"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -316,4 +317,69 @@ func GetFollowing(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.JSON(w, http.StatusOK, following)
+}
+
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	userIDIntoToken, erro := authentication.GetUserID(r)
+	if erro != nil {
+		response.Error(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	parameters := mux.Vars(r)
+	userID, erro := strconv.ParseUint(parameters["id"], 10, 64)
+	if erro != nil {
+		response.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	if userID != userIDIntoToken {
+		response.Error(w, http.StatusForbidden, errors.New("unauthorized, you can only update your own data"))
+		return
+	}
+
+	bodyRequest, erro := ioutil.ReadAll(r.Body)
+	if erro != nil {
+		response.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	var password models.Password
+	erro = json.Unmarshal(bodyRequest, &password)
+	if erro != nil {
+		response.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := database.Connect()
+	if erro != nil {
+		response.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewUsersRepository(db)
+	userSavedPassword, erro := repository.UserSavedPassword(userID)
+	if erro != nil {
+		response.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	if erro = security.CheckHash(userSavedPassword, password.OldPass); erro != nil {
+		response.Error(w, http.StatusUnauthorized, errors.New("the password is different then the saved one"))
+		return
+	}
+
+	newPasswordWithHash, erro := security.Hash(password.NewPass)
+	if erro != nil {
+		response.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	if erro = repository.UpdatePassword(userID, string(newPasswordWithHash)); erro != nil {
+		response.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	response.JSON(w, http.StatusNoContent, nil)
 }
