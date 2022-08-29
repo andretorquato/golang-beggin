@@ -33,7 +33,7 @@ CREATE TABLE posts (
 	title varchar(50) not null,
 	content varchar(300) not null,
 	author_id int not null,
-	author_nick varchar(50) not null,
+	author_nick varchar(50),
 	likes int default 0,
 	created_at timestamp default current_timestamp(),
 

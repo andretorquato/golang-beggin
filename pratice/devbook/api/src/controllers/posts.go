@@ -1,9 +1,50 @@
 package controllers
 
-import "net/http"
+import (
+	"api/src/authentication"
+	"api/src/database"
+	"api/src/models"
+	"api/src/repositories"
+	"api/src/response"
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
+)
 
 func CreatePost(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("CreatePost"))
+	userID, erro := authentication.GetUserID(r)
+	if erro != nil {
+		response.Error(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	bodyRequest, erro := ioutil.ReadAll(r.Body)
+	if erro != nil {
+		response.Error(w, http.StatusUnprocessableEntity, erro)
+		return
+	}
+
+	var post models.Post
+	if erro = json.Unmarshal(bodyRequest, &post); erro != nil {
+		response.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	post.AuthorID = userID
+	db, erro := database.Connect()
+	if erro != nil {
+		response.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	repository := repositories.NewPostsRepository(db)
+	post.ID, erro = repository.Create(post)
+	if erro != nil {
+		response.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	response.JSON(w, http.StatusCreated, post)
 }
 
 func GetAllPosts(w http.ResponseWriter, r *http.Request) {
