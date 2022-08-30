@@ -253,7 +253,6 @@ func UnFollowUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db, erro := database.Connect()
-
 	if erro != nil {
 		response.Error(w, http.StatusInternalServerError, erro)
 		return

@@ -56,7 +56,29 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllPosts(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("GetAllPosts"))
+	userIDIntoToken, erro := authentication.GetUserID(r)
+	if erro != nil {
+		response.Error(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	userID := uint64(userIDIntoToken)
+	db, erro := database.Connect()
+	if erro != nil {
+		response.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewPostsRepository(db)
+	posts, erro := repository.GetAll(userID)
+
+	if erro != nil {
+		response.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, posts)
 }
 
 func GetAnPost(w http.ResponseWriter, r *http.Request) {

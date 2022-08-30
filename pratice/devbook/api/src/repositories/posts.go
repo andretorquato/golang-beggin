@@ -52,3 +52,27 @@ func (repo Posts) GetByID(postID uint64) (models.Post, error) {
 
 	return post, nil
 }
+
+func (repo Posts) GetAll(userID uint64) ([]models.Post, error) {
+	rows, erro := repo.db.Query(`
+	SELECT DISTINCT p.*, u.nick FROM posts p
+	INNER JOIN users u ON u.id = p.author_id 
+	INNER JOIN followers f ON f.user_id = p.author_id  
+	WHERE u.id = ? OR f.follower_id = ?
+	ORDER BY 1 DESC`,
+		userID, userID)
+	if erro != nil {
+		return nil, erro
+	}
+	defer rows.Close()
+	var posts []models.Post
+	for rows.Next() {
+		var post models.Post
+		if erro := rows.Scan(&post.ID, &post.Title, &post.Content, &post.AuthorID, &post.Likes, &post.CreatedAt, &post.AuthorNick); erro != nil {
+			return nil, erro
+		}
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
