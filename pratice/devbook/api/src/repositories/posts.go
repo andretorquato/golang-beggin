@@ -76,3 +76,17 @@ func (repo Posts) GetAll(userID uint64) ([]models.Post, error) {
 
 	return posts, nil
 }
+
+func (repo Posts) Update(postID uint64, post models.Post) error {
+	statement, erro := repo.db.Prepare("UPDATE posts SET title = ?, content = ? WHERE id = ?")
+	if erro != nil {
+		return erro
+	}
+	defer statement.Close()
+
+	if _, erro = statement.Exec(post.Title, post.Content, postID); erro != nil {
+		return erro
+	}
+
+	return nil
+}
