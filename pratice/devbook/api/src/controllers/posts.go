@@ -8,7 +8,6 @@ import (
 	"api/src/response"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -137,7 +136,6 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(postIntoDB, userIDIntoToken)
 	if postIntoDB.AuthorID != uint64(userIDIntoToken) {
 		response.Error(w, http.StatusForbidden, errors.New("you can't update a post that is not yours"))
 		return
@@ -169,5 +167,42 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePost(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("DeletePost"))
+	userIDIntoToken, erro := authentication.GetUserID(r)
+	if erro != nil {
+		response.Error(w, http.StatusUnauthorized, erro)
+		return
+	}
+
+	parameters := mux.Vars(r)
+	postID, erro := strconv.ParseUint(parameters["id"], 10, 64)
+	if erro != nil {
+		response.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := database.Connect()
+	if erro != nil {
+		response.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewPostsRepository(db)
+	postIntoDB, erro := repository.GetByID(postID)
+	if erro != nil {
+		response.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	if postIntoDB.AuthorID != uint64(userIDIntoToken) {
+		response.Error(w, http.StatusForbidden, errors.New("you can't delete a post that is not yours"))
+		return
+	}
+
+	if erro = repository.Delete(postID); erro != nil {
+		response.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	response.JSON(w, http.StatusNoContent, nil)
 }
