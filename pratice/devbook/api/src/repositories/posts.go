@@ -128,3 +128,17 @@ func (repo Posts) GetPostsByUser(userID uint64) ([]models.Post, error) {
 
 	return posts, nil
 }
+
+func (repo Posts) LikePost(postID uint64) error {
+	statement, erro := repo.db.Prepare(`UPDATE posts SET likes = likes + 1 WHERE id = ?`)
+	if erro != nil {
+		return erro
+	}
+	defer statement.Close()
+
+	if _, erro = statement.Exec(postID); erro != nil {
+		return erro
+	}
+
+	return nil
+}
