@@ -46,4 +46,10 @@ var postsRoutes = []Route{
 		Handler:  controllers.LikePost,
 		NeedAuth: true,
 	},
+	{
+		URI:      "/posts/{id}/dislike",
+		Method:   http.MethodPut,
+		Handler:  controllers.DislikePost,
+		NeedAuth: true,
+	},
 }

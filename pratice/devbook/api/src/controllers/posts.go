@@ -232,8 +232,8 @@ func GetPostsByUser(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, posts)
 }
 
-func LikePost(w http.ResponseWriter, h *http.Request) {
-	parameters := mux.Vars(h)
+func LikePost(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
 	postID, erro := strconv.ParseUint(parameters["id"], 10, 64)
 	if erro != nil {
 		response.Error(w, http.StatusBadRequest, erro)
@@ -255,4 +255,29 @@ func LikePost(w http.ResponseWriter, h *http.Request) {
 	}
 
 	response.JSON(w, http.StatusOK, "Liked")
+}
+
+func DislikePost(w http.ResponseWriter, r *http.Request) {
+	parameters := mux.Vars(r)
+	postID, erro := strconv.ParseUint(parameters["id"], 10, 64)
+	if erro != nil {
+		response.Error(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := database.Connect()
+	if erro != nil {
+		response.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewPostsRepository(db)
+
+	if erro := repository.DislikePost(postID); erro != nil {
+		response.Error(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	response.JSON(w, http.StatusOK, "Disliked")
 }
