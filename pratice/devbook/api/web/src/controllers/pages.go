@@ -8,3 +8,7 @@ import (
 func LoadLoginScreen(w http.ResponseWriter, r *http.Request) {
 	utils.ExecuteTemplate(w, "login.html", nil)
 }
+
+func LoadRegisterScreen(w http.ResponseWriter, r *http.Request) {
+	utils.ExecuteTemplate(w, "register.html", nil)
+}

@@ -9,17 +9,20 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-	<title>Login Page</title>
+	<title>Register Page</title>
 </head>
 
 <body>
 	<div class="container-login">
 		<form class="devbook-form" action="#">
-			<span>Welcome to Devbook</span>
-			<div><input type="text" name="email" id="email" placeholder="Enter with your e-mail"></div>
+			<span>Create a new user</span>
+			<div><input type="text" name="name" id="name" placeholder="Enter with your name"></div>
+			<div><input type="email" name="email" id="email" placeholder="Enter with your e-mail"></div>
+			<div><input type="text" name="nick" id="nick" placeholder="Enter with your nick"></div>
 			<div><input type="password" name="password" id="password" placeholder="Enter with your password"></div>
-			<a href="/register">Create Account</a>
-			<button class="btn-devbook" type="submit">Login</button>
+			<div><input type="password" name="confirm-password" id="confirm-password" placeholder="Confirm your password">
+			</div>
+			<button class="btn-devbook" type="submit">Create Account</button>
 		</form>
 	</div>
 </body>
