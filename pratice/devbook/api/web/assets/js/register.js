@@ -1,8 +1,7 @@
-$("#register-form").on(createUser);
+$("#register-form").on('submit', createUser);
 
 function createUser(event){
 	event.preventDefault();
-	console.log("registe")
 	if($("#password").val() != $("#password-confirm").val()){
 		alert("fill the same password");
 		return
