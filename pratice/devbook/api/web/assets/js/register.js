@@ -16,5 +16,8 @@ function createUser(event){
 			nick: $("#nick").val(),
 			password: $("#password").val()
 		}
-	}). done(() => alert('User Created')).fail(() => alert('error on create new user'));
+	}). done(() => alert('User Created')).fail((err) => {
+		console.log(err)
+		alert('error on create new user')
+	});
 }
