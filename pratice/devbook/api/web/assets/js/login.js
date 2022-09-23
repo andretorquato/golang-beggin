@@ -12,6 +12,6 @@ function login(event) {
   }).done(() => window.location.href = "/home")
     .fail((err) => {
       console.log(err);
-      alert("error on login");
+      alert("email or password incorrect.");
     });
 }
