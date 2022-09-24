@@ -36,5 +36,5 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	token, _ := ioutil.ReadAll(response.Body)
 	fmt.Println(response.StatusCode, string(token))
-	// responses.JSON(w, response.StatusCode, nil)
+	responses.JSON(w, response.StatusCode, nil)
 }
