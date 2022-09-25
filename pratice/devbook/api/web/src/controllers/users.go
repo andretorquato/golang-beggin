@@ -30,7 +30,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	defer response.Body.Close()
 
 	if response.StatusCode >= 400 {
-		responses.CaptureStatusCode(w, response)
+		responses.CaptureStatusCodeError(w, response)
 		return
 	}
 

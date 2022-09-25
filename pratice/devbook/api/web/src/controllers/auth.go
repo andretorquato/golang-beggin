@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"web/src/models"
 	"web/src/responses"
 )
 
@@ -30,11 +30,16 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	defer response.Body.Close()
 
 	if response.StatusCode >= 400 {
-		responses.CaptureStatusCode(w, response)
+		responses.CaptureStatusCodeError(w, response)
 		return
 	}
 
-	token, _ := ioutil.ReadAll(response.Body)
-	fmt.Println(response.StatusCode, string(token))
+	var authData models.AuthData
+	if erro = json.NewDecoder(response.Body).Decode(&authData); erro != nil {
+		responses.JSON(w, http.StatusUnprocessableEntity, responses.ErroAPI{Erro: erro.Error()})
+		return
+	}
+
+	fmt.Println(authData)
 	responses.JSON(w, response.StatusCode, nil)
 }
