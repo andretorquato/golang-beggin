@@ -8,12 +8,12 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type Config struct {
-	APIURL   string
-	APPPort  string
-	HashKey  string
-	BlockKey string
-}
+var (
+	APIURL   = ""
+	Port     = 0
+	HashKey  []byte
+	BlockKey []byte
+)
 
 func Load() {
 	var erro error
@@ -22,7 +22,7 @@ func Load() {
 		log.Fatal(erro)
 	}
 
-	port, erro := strconv.Atoi(os.Getenv("APP_PORT"))
+	Port, erro = strconv.Atoi(os.Getenv("APP_PORT"))
 	if erro != nil {
 		log.Fatal(erro)
 	}

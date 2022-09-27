@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"web/src/config"
 	"web/src/router"
 	"web/src/utils"
 )
 
 func main() {
+	config.Load()
 	r := router.Generate()
 	utils.LoadTemplate()
 
-	fmt.Println("Running web application on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	fmt.Printf("Running web application on port %d", config.Port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", config.Port), r))
 }
