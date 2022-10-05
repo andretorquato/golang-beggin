@@ -10,7 +10,6 @@ import (
 var s *securecookie.SecureCookie
 
 func Configure() {
-	// s = securecookie.New(securecookie.GenerateRandomKey(16), securecookie.GenerateRandomKey(16))
 	s = securecookie.New(config.HashKey, config.BlockKey)
 }
 
