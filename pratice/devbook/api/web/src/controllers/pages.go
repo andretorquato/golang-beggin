@@ -1,7 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"web/src/config"
+	"web/src/requests"
 	"web/src/utils"
 )
 
@@ -14,5 +17,9 @@ func LoadRegisterScreen(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoadHomeScreen(w http.ResponseWriter, r *http.Request) {
+	url := fmt.Sprintf("%s/posts", config.APIURL)
+	response, erro := requests.MakeRequestWithAuthentication(r, http.MethodGet, url, nil)
+	fmt.Println(response.StatusCode, erro)
+
 	utils.ExecuteTemplate(w, "home.html", nil)
 }
