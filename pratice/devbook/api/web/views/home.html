@@ -8,5 +8,10 @@
 </head>
 <body>
 	<h1>Home page</h1>
+
+	{{ range . }}
+		<p>{{ .title }}</p>
+		<p>{{ .description }}</p>
+	{{ end }}
 </body>
 </html>
