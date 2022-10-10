@@ -7,11 +7,10 @@
 	<title>Home</title>
 </head>
 <body>
-	<h1>Home page</h1>
-
-	{{ range . }}
-		<p>{{ .title }}</p>
-		<p>{{ .description }}</p>
+	<h1>{{ .Title }}</h1>
+	{{ range .Posts }}
+	<p>Titulo:{{ .Title }}</p>
+		<p>Descrição:{{ .Content }}</p>
 	{{ end }}
 </body>
 </html>

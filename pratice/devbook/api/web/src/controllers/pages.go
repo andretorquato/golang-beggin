@@ -40,5 +40,8 @@ func LoadHomeScreen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.ExecuteTemplate(w, "home.html", posts)
+	utils.ExecuteTemplate(w, "home.html", struct {
+		Title string
+		Posts []models.Post
+	}{"Home", posts})
 }

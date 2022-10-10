@@ -13,4 +13,7 @@ func LoadTemplate() {
 
 func ExecuteTemplate(w http.ResponseWriter, template string, data interface{}) {
 	templates.ExecuteTemplate(w, template, data)
+	// if erro != nil {
+	// 	log.Fatal(erro)
+	// }
 }
