@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,10 +8,12 @@
 	<title>Home</title>
 	<link rel="stylesheet" href="/assets/css/bootstrap.css">
 </head>
+
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<a class="navbar-brand" href="#">Navbar</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+			aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarNav">
@@ -37,23 +40,30 @@
 				<form class="new-post">
 					<div class="form-group">
 						<label for="title">Titulo</label>
-						<input type="text" class="form-control" id="title" name="title" required="required" placeholder="Insira o titulo da publicação"/>
+						<input type="text" class="form-control" id="title" name="title" required="required"
+							placeholder="Insira o titulo da publicação" />
 					</div>
 					<div class="form-group">
 						<label for="title">Conteúdo</label>
-						<textarea class="form-control" id="content" name="content" required="required" placeholder="Insira o conteúdo da publicação"></textarea>
+						<textarea class="form-control" id="content" name="content" required="required"
+							placeholder="Insira o conteúdo da publicação"></textarea>
 					</div>
-					
 					<button class="btn mt-2 btn-primary">Publicar</button>
-					
 				</form>
 			</fieldset>
 		</div>
 		<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
 			{{ range .Posts }}
-	<p>Titulo:{{ .Title }}</p>
-		<p>Descrição:{{ .Content }}</p>
-	{{ end }} -->
+			<div class="jumbotron">
+				<h1 class="display-4">{{ .Title }}</h1>
+				<p class="lead">{{.AuthorNick}} - {{ .CreatedAt }}</p>
+				<hr class="my-4">
+				<p>{{ .Content}}</p>
+				<p class="lead">
+					<a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+				</p>
+			</div>
+			{{ end }} -->
 		</div>
 	</div>
 	<!-- <h1>{{ .Title }}</h1>
@@ -61,5 +71,11 @@
 	<p>Titulo:{{ .Title }}</p>
 		<p>Descrição:{{ .Content }}</p>
 	{{ end }} -->
+	<footer class="footer">
+		<div class="container">
+			<span class="text-muted">2022 Everything.</span>
+		</div>
+	</footer>
 </body>
+
 </html>
