@@ -6,25 +6,49 @@ import (
 )
 
 func main() {
-	newChannel := make(chan string)
-	go writeN(newChannel, "Hello")
+	chanOne := make(chan string)
+	chanTwo := make(chan string)
+	chanThree := make(chan string)
 
-	for {
-		message, opened := <-newChannel
-		if !opened {
-			fmt.Println("--> Channel closed <--")
-			break
-		}
+	go firstChannel(chanOne)
+	go secondChannel(chanTwo)
+	go thirdChannel(chanThree)
+
+	for message := range chanOne {
 		fmt.Println(message)
+	}
+
+	for messageTwo := range chanTwo {
+		fmt.Println(messageTwo)
+	}
+
+	for messageThree := range chanThree {
+		fmt.Println(messageThree)
 	}
 
 	fmt.Println("Done")
 }
 
-func writeN(ch chan string, text string) {
-	for i := 1; i < 5; i++ {
-		ch <- text
+func firstChannel(channel chan string) {
+	for i := 0; i < 20; i++ {
+		channel <- "<-.-> First"
 		time.Sleep(time.Second)
 	}
-	close(ch)
+	close(channel)
+}
+
+func secondChannel(channel chan string) {
+	for i := 0; i < 10; i++ {
+		channel <- "--- SECOND CHANNEL ---"
+		time.Sleep(time.Second * 2)
+	}
+	close(channel)
+}
+
+func thirdChannel(channel chan string) {
+	for i := 0; i < 5; i++ {
+		channel <- "+++ THIRD CHANNEL +++"
+		time.Sleep(time.Second * 3)
+	}
+	close(channel)
 }
