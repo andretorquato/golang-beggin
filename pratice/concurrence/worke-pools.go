@@ -1,21 +1,22 @@
 package main
 
 func main() {
-	tasks := make(chan int, 100)
-	results := make(chan int, 100)
+	tasks := make(chan int, 45)
+	results := make(chan int, 45)
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 5; i++ {
 		go worker(tasks, results)
 	}
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 45; i++ {
 		tasks <- i
 	}
 
 	close(tasks)
 
-	for i := 0; i < 100; i++ {
-		<-results
+	for i := 0; i < 45; i++ {
+		results := <-results
+		println(results)
 	}
 }
 
