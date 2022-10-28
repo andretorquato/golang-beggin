@@ -15,6 +15,7 @@ func TestAddressType(t *testing.T) {
 		{"home", "home"},
 		{"work", "work"},
 		{"unknown", "other"},
+		{"unknown", "other"},
 	}
 
 	for _, c := range cases {
