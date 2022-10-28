@@ -1,12 +1,26 @@
 package address
 
-import "testing"
+import (
+	"testing"
+)
+
+type CasesTest struct {
+	inputAddressType    string
+	expectedAddressType string
+}
 
 func TestAddressType(t *testing.T) {
-	inputAddressType := "street queiroz"
-	expectedAddressType := "street"
-	receivedAddressType := AddressType(inputAddressType)
-	if receivedAddressType != expectedAddressType {
-		t.Errorf("AddressType(%s) == %s, expected %s", inputAddressType, receivedAddressType, expectedAddressType)
+	cases := []CasesTest{
+		{"street one", "street"},
+		{"home", "home"},
+		{"work", "work"},
+		{"unknown", "other"},
+	}
+
+	for _, c := range cases {
+		output := AddressType(c.inputAddressType)
+		if output != c.expectedAddressType {
+			t.Errorf("AddressType(%q) == %q, want %q", c.inputAddressType, output, c.expectedAddressType)
+		}
 	}
 }
