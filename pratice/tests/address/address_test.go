@@ -10,6 +10,7 @@ type CasesTest struct {
 }
 
 func TestAddressType(t *testing.T) {
+	t.Parallel()
 	cases := []CasesTest{
 		{"street one", "street"},
 		{"home", "home"},
