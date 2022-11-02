@@ -1,10 +1,9 @@
 package main
 
-import (
-	"fmt"
-)
+import "advanced-test/geometry"
 
 func main() {
-	sumPoints := calculate.Point{X: 10, Y: 20}.Sum()
-	fmt.Println(sumPoints)
+	point := geometry.Point{X: 1, Y: 2}
+	point.Sub()
+	point.Sum()
 }
